@@ -333,10 +333,16 @@ class SignerClient:
             account_index,
             api_private_keys: Dict[int, str],
             nonce_management_type=nonce_manager.NonceManagerType.OPTIMISTIC,
+            chain_id: Optional[int] = None,
     ):
         self.url = url
-        self.chain_id = 304 if ("mainnet" in url or "api" in url) else 300
-
+        self.chain_id = chain_id if chain_id is not None else (
+            304 if ("mainnet.zklighter" in self.url) else
+            300 if ("testnet.zklighter" in self.url) else
+            466324 if ("api.rh.lighter" in self.url) else
+            300 if ("api.rh-testnet.lighter" in self.url) else
+            304
+        )
         self.validate_api_private_keys(api_private_keys)
         self.api_key_dict = api_private_keys
         self.account_index = account_index
